@@ -106,22 +106,6 @@ navigator.mediaDevices.getUserMedia({
   alert('getUserMedia() error: ' + e.name);
 });
 
-const mediaOption = {
-  audio: true,
-  video: {
-    mandatory:{
-      maxWidth: 160,
-      maxHeight: 120,
-      maxFrameRate:5,
-    },
-    options:[
-      {facingMode:'user'},
-    ],
-  },
-};
-
-navigator.mediaDevices.getUserMedia(mediaOption)
-
 function gotStream(stream) {
   console.log('Adding local stream.');
   localStream = stream;
@@ -131,10 +115,6 @@ function gotStream(stream) {
     maybeStart();
   }
 }
-
-var constraints = {
-  video: true
-};
 
 console.log('Getting user media with constraints', constraints);
 
@@ -282,3 +262,12 @@ function stop() {
   pc = null;
 }
 
+function muteMic(){
+  localStream.getAudioTracks().forEach(track => track.enabled = !track.enabled);
+  return false;
+}
+
+function muteCam(){
+  localStream.getVideoTracks().forEach(track => track.enabled = !track.enabled);
+  return false;
+}

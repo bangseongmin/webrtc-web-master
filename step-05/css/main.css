@@ -2,6 +2,10 @@ body {
   font-family: sans-serif;
 }
 
+video {
+
+}
+
 #videos {
   width: 100%;
   max-width: 500px;
@@ -12,6 +16,7 @@ body {
   width: 100%;
   float: left;
   border: 1px solid;
+  background-color: #666666;
 }
 
 #remoteVideo {
@@ -20,6 +25,7 @@ body {
   float: left;
   border: 1px solid;
   display: none;
+  background-color: pink;
 }
 
 .localVideoInChatting{
@@ -29,4 +35,11 @@ body {
 
 .remoteVideoInChatting{
   display: inline-block !important;
+}
+
+#shareScreen{
+  margin-left: 10px;
+  width: 50%;
+  height: 50%;
+  background-color: darkblue;
 }

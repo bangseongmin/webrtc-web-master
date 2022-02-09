@@ -1,0 +1,50 @@
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    margin-left: 0;
+}
+
+ul {
+    display: flex;
+    justify-content: center;
+
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    background-color: #333;
+}
+
+ul:after {
+    content: '';
+    display: block;
+    clear: both;
+}
+
+li {
+    text-align: center;
+
+    float: left;
+    bottom: 0px;
+    margin-right: 25px;
+
+}
+
+li .exit{
+    position: absolute;
+    float: right;
+}
+
+li a {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+
+
+li a:hover:not(.active) {
+    background-color: #111;
+}

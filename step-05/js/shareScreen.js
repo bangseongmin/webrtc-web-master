@@ -1,0 +1,43 @@
+'use strict';
+
+// Polyfill in Firefox.
+// See https://blog.mozilla.org/webrtc/getdisplaymedia-now-available-in-adapter-js/
+if (adapter.browserDetails.browser == 'firefox') {
+    adapter.browserShim.shimGetDisplayMedia(window, 'screen');
+}
+
+function handleSuccess(stream) {
+    const video = document.querySelector("#shareScreen");
+    video.srcObject = stream;
+
+    // demonstrates how to detect that the user has stopped
+    // sharing the screen via the browser UI.
+    stream.getVideoTracks()[0].addEventListener('ended', () => {
+        errorMsg('The user has ended sharing the screen');
+    });
+}
+
+function handleError(error) {
+    errorMsg(`getDisplayMedia error: ${error.name}`, error);
+}
+
+function errorMsg(msg, error) {
+    const errorElement = document.querySelector('#errorMsg');
+    errorElement.innerHTML += `<p>${msg}</p>`;
+    if (typeof error !== 'undefined') {
+        console.error(error);
+    }
+}
+
+function shareScreen(){
+    navigator.mediaDevices.getDisplayMedia({video: true})
+        .then(handleSuccess, handleError)
+
+    return false;
+}
+
+if ((navigator.mediaDevices && 'getDisplayMedia' in navigator.mediaDevices)) {
+    console.log("shareBtn disabled");
+} else {
+    errorMsg('getDisplayMedia is not supported');
+}

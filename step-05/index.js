@@ -37,15 +37,19 @@ io.sockets.on('connection', function(socket) {
   socket.on('message', function(message) {
     log('Client said: ', message);
 
-    // 현재 소켓 ID로 IN/OUT 처리됨
-    if(message==="bye" && socket.room['foo']){
-      io.of('/').in('foo').clients((error, socketIds)=>{
-        if(error) throw error;
+    try{
+      // 현재 소켓 ID로 IN/OUT 처리됨
+      if(message==="bye" && socket.room['foo']){
+        io.of('/').in('foo').clients((error, socketIds)=>{
+          if(error) throw error;
 
-        socketIds.forEach(socketId=>{
-          io.sockets.sockets[socketId].leave('foo');
+          socketIds.forEach(socketId=>{
+            io.sockets.sockets[socketId].leave('foo');
+          })
         })
-      })
+      }
+    }catch (e){
+      console.error(e);
     }
 
     // for a real app, would be room-only (not broadcast)
