@@ -4,27 +4,34 @@ if(typeof RecordRTC_Extension === 'undefined') {
 
 // first step
 var recorder = new RecordRTC_Extension();
-var video = document.querySelector('#shareScreen');      // 녹화할 영상
+var video = document.querySelector('.shareScreen');      // 녹화할 영상
 
 function processRecording(){
-    // 화면 공유 옵션 선택
-    var options = recorder.getSupoortedFormats()[document.getElementById('RecordRTC_Extension_Options').value];
+    // 선택 설정 값
+    var selectedIdx = document.getElementById("selectedIdx");
+    var str = document.querySelectorAll('div.dropup-content a');
+    var string = str.item(selectedIdx.value).innerHTML;
 
-    if(document.getElementsByTagName("a")[3].innerHTML == "녹화 중지"){
+    selectedIdx.setAttribute('value', string);
+
+    // 화면 공유 옵션 선택
+    var options = recorder.getSupoortedFormats()[selectedIdx.value];
+
+    if(document.getElementById('recordBtn').innerHTML == "녹화 중지"){
         console.log("녹화 중지");
         recorder.stopRecording(stopRecordingCallback);
 
-        var string = document.getElementsByTagName("a")[3].innerHTML;
+        var string = document.getElementById('recordBtn').innerHTML;
         var replacedString = string.replace("녹화 중지", "녹화");
-        document.getElementsByTagName("a")[3].innerHTML = replacedString;
+        document.getElementById('recordBtn').innerHTML = replacedString;
 
         return false;
     }
     console.log("녹화 시작");
     recorder.startRecording(options, function() {
-        var string = document.getElementsByTagName("a")[3].innerHTML;
+        var string = document.getElementById('recordBtn').innerHTML;
         var replacedString = string.replace("녹화", "녹화 중지");
-        document.getElementsByTagName("a")[3].innerHTML = replacedString;
+        document.getElementById('recordBtn').innerHTML = replacedString;
     });
 
     return false;
@@ -50,4 +57,14 @@ function downloadRecording(blob){
         document.body.removeChild(a);
         window.URL.revokeObjectURL(url);
     }, 100);
+}
+
+function setRecordSet(idx){
+    var temp = document.getElementById("selectedIdx");
+
+    alert("변경 전 : "+temp.value);
+    temp.setAttribute('value', idx);
+    alert("변경 후 : "+temp.value);
+
+    return false;
 }

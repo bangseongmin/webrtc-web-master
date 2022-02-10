@@ -38,7 +38,7 @@ io.sockets.on('connection', function(socket) {
 
     try{
       // 현재 소켓 ID로 IN/OUT 처리됨
-      if(message==="bye" && socket.room['foo']){
+      if(message==="bye"){
         io.of('/').in('foo').clients((error, socketIds)=>{
           if(error) throw error;
 
@@ -50,7 +50,6 @@ io.sockets.on('connection', function(socket) {
     }catch (e){
       console.error(e);
     }
-
     // for a real app, would be room-only (not broadcast)
     socket.broadcast.emit('message', message);
   });
@@ -71,7 +70,7 @@ io.sockets.on('connection', function(socket) {
       console.log('created');
 
     // 방 참여(인원 확대 -> CSS 카메라 처리 해야함)
-    } else if (numClients < 4) {
+    } else if (numClients < 11) {
       log('Client ID ' + socket.id + ' joined room ' + room);
       io.sockets.in(room).emit('join', room);
       socket.join(room);

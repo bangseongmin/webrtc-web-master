@@ -9,65 +9,77 @@
   <base target="_blank">
   <title>Realtime communication with WebRTC</title>
   <!--  기본 css-->
-  <link rel="stylesheet" href="css/main.css" />
-  <link rel="stylesheet" href="css/bottom-bar.css">
+  <link rel="stylesheet" href="css/main.css?ver=3" />
+  <link rel="stylesheet" href="css/bottom-bar.css?ver=4">
+  <style>
+    ul.slides{
+      background-color: white;
+    }
+  </style>
 </head>
 <body>
-  <h1>Realtime communication with WebRTC</h1>
-
-  <div id="videos">
-    <video id="localVideo" autoplay muted playsinline></video>
-    <video id="remoteVideo" autoplay playsinline></video>
-    <video id="shareScreen" autoplay playsinline></video>
+  <div class="slide_wrapper">
+    <ul class="slides">
+      <!-- img 10개 -->
+      <li><video class="camera" onclick="swapScreen(0);" autoplay muted playsinline></video></li>
+      <li><video class="camera" onclick="swapScreen(1);" autoplay muted playsinline></video></li>
+      <li><video class="camera" onclick="swapScreen(2);" autoplay muted playsinline></video></li>
+      <li><video class="camera" onclick="swapScreen(3);" autoplay muted playsinline></video></li>
+      <li><video class="camera" onclick="swapScreen(4);" autoplay muted playsinline></video></li>
+      <li><video class="camera" onclick="swapScreen(5);" autoplay muted playsinline></video></li>
+      <li><video class="camera" onclick="swapScreen(6);" autoplay muted playsinline></video></li>
+      <li><video class="camera" onclick="swapScreen(7);" autoplay muted playsinline></video></li>
+      <li><video class="camera" onclick="swapScreen(8);" autoplay muted playsinline></video></li>
+      <li><video class="camera" onclick="swapScreen(9);" autoplay muted playsinline></video></li>
+    </ul>
   </div>
 
-  <div>
-  </div>
+  <p class="controls">
+    <span class="prev">prev</span>
+    <span class="next">next</span>
+  </p>
+
+  <p class="shares">
+    <video class="shareScreen" autoplay muted playsinline></video>
+  </p>
 
   <!-- This file is automatically added/served when running "node index.js". -->
   <script  src="http://code.jquery.com/jquery-latest.min.js"></script>
   <script src="https://www.webrtc-experiment.com/common.js"></script>
   <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
   <script src="/socket.io/socket.io.js"></script>
-  <script src="js/main.js?ver=11"></script>
-  <script src="js/shareScreen.js?ver=11"></script>
-  <script src="js/recordVideo.js?ver=19"></script>
+  <script src="js/main.js?ver=69"></script>
+  <script src="js/shareScreen.js?ver=76"></script>
+  <script src="js/recordVideo.js?ver=66"></script>
+  <script src="js/slides.js?ver=45"></script>
 
-
+  <!--하단 메뉴-->
   <div class="container">
     <div class="bottom-nav">
       <ul>
         <li><a href="#" onclick="return muteMic();">음성</a></li>
         <li><a href="#" onclick="return muteCam();">비디오</a></li>
+
+          <li><a href="#" onclick="return sharingScreen();">화면공유</a></li>
+
         <div class="dropup">
-          <li><a href="#" onclick="return shareScreen();">화면공유</a></li>
+        <li><a id="recordBtn" href="#" onclick="return processRecording();">녹화</a> </li>
           <div class="dropup-content">
-            <a value="0">Screen Only (without audio)</a>
-            <a value="1">Screen + Microphone</a>
-            <a value="2">Screen + Speakers</a>
-            <a value="3">Screen + Microphone + Speakers</a>
-            <a value="4">Chrome Tab</a>
-          </div>
+          <a href="#" value="0" onclick="return setRecordSet(0)">Screen Only (without audio)</a>
+          <a href="#" value="1" onclick="return setRecordSet(1)">Screen + Microphone</a>
+          <a href="#" value="2" onclick="return setRecordSet(2)">Screen + Speakers</a>
+          <a href="#" value="3" onclick="return setRecordSet(3)">Screen + Microphone + Speakers</a>
+          <a href="#" value="4" onclick="return setRecordSet(4)">Chrome Tab</a>
         </div>
-        <li><a href="#" onclick="return processRecording();">녹화</a> </li>
+      </div>
         <li><a href="#">STT</a></li>
         <li><a href="#">TTS</a></li>
         <li><a href="#">채팅</a></li>
         <li><a href="#">나가기</a></li>
       </ul>
     </div>
-
-
-    <div class="dropup">
-      <!-- 녹화 선택지 -->
-      <select id="RecordRTC_Extension_Options">
-
-      </select>
-    </div>
-
-
   </div>
-
+  <input id="selectedIdx" type="hidden" value="-1">
   <footer style="margin-top: 20px;"><small id="send-message"></small></footer>
 </body>
 </html>

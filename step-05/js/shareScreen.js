@@ -7,8 +7,14 @@ if (adapter.browserDetails.browser == 'firefox') {
 }
 
 function handleSuccess(stream) {
-    const video = document.querySelector("#shareScreen");
+    var video = document.querySelector('.shareScreen');
     video.srcObject = stream;
+    // var temp;
+    // var localVideo = document.querySelector('.camera');
+
+    // temp.srcObject = localVideo.srcObject;
+    // localVideo.srcObject = video.srcObject;
+    // video.srcObject = temp.srcObject;
 
     // demonstrates how to detect that the user has stopped
     // sharing the screen via the browser UI.
@@ -22,14 +28,13 @@ function handleError(error) {
 }
 
 function errorMsg(msg, error) {
-    const errorElement = document.querySelector('#errorMsg');
-    errorElement.innerHTML += `<p>${msg}</p>`;
+
     if (typeof error !== 'undefined') {
         console.error(error);
     }
 }
 
-function shareScreen(){
+function sharingScreen(){
     navigator.mediaDevices.getDisplayMedia({video: true})
         .then(handleSuccess, handleError)
 

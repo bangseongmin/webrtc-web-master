@@ -5,8 +5,10 @@ var isInitiator = false;
 var isStarted = false;
 var localStream;
 var pc;
-var remoteStream;
+var remoteStream = [];
 var turnReady;
+
+var participant = 1;
 
 var pcConfig = {
   'iceServers': [{
@@ -16,12 +18,6 @@ var pcConfig = {
     'username':'testadmin',
     'credential': '123456'  
   }]
-};
-
-// Set up audio and video regardless of what devices are present.
-var sdpConstraints = {
-  offerToReceiveAudio: true,
-  offerToReceiveVideo: true
 };
 
 /////////////////////////////////////////////
@@ -93,9 +89,14 @@ socket.on('message', function(message) {
 });
 
 ////////////////////////////////////////////////////
+var videos = document.querySelectorAll('.camera');
 
-var localVideo = document.querySelector('#localVideo');   
-var remoteVideo = document.querySelector('#remoteVideo');
+var localVideo = videos.item(0);
+var remoteVideo = [];
+remoteVideo[participant] = videos.item(participant);
+
+// var shareScreen = document.querySelector('.shareScreen');
+// shareScreen = videos.item(videos.length-1);
 
 navigator.mediaDevices.getUserMedia({
   audio: true,
@@ -110,18 +111,11 @@ function gotStream(stream) {
   console.log('Adding local stream.');
   localStream = stream;
   localVideo.srcObject = stream;
+
   sendMessage('got user media');
   if (isInitiator) {
     maybeStart();
   }
-}
-
-console.log('Getting user media with constraints', constraints);
-
-if (location.hostname !== 'localhost') {
-  requestTurn(
-    'https://computeengineondemand.appspot.com/turn?username=41784574&key=4080218913'
-  );
 }
 
 function maybeStart() {
@@ -130,6 +124,15 @@ function maybeStart() {
     console.log('>>>>>> creating peer connection');
     createPeerConnection();
     pc.addStream(localStream);
+    isStarted = true;
+    console.log('isInitiator', isInitiator);
+    if (isInitiator) {
+      doCall();
+    }
+  }else if(isStarted && typeof localStream !== 'undefined' && isChannelReady){
+    console.log('>>>>>> creating peer connection');
+    createPeerConnection();
+    pc.addStream(localStream, shareScreen);
     isStarted = true;
     console.log('isInitiator', isInitiator);
     if (isInitiator) {
@@ -199,61 +202,40 @@ function onCreateSessionDescriptionError(error) {
   trace('Failed to create session description: ' + error.toString());
 }
 
-function requestTurn(turnURL) {
-  var turnExists = false;
-  for (var i in pcConfig.iceServers) {
-    if (pcConfig.iceServers[i].urls.substr(0, 5) === 'turn:') {
-      turnExists = true;
-      turnReady = true;
-      break;
-    }
-  }
-  if (!turnExists) {
-    console.log('Getting TURN server from ', turnURL);
-    // No TURN server. Get one from computeengineondemand.appspot.com:
-    var xhr = new XMLHttpRequest();
-    xhr.onreadystatechange = function() {
-      if (xhr.readyState === 4 && xhr.status === 200) {
-        var turnServer = JSON.parse(xhr.responseText);
-        console.log('Got TURN server: ', turnServer);
-        pcConfig.iceServers.push({
-          'urls': 'turn:' + turnServer.username + '@' + turnServer.turn,
-          'credential': turnServer.password
-        });
-        turnReady = true;
-      }
-    };
-    xhr.open('GET', turnURL, true);
-    xhr.send();
-  }
-}
-
 function handleRemoteStreamAdded(event) {
   console.log('Remote stream added.');
-  remoteStream = event.stream;
-  remoteVideo.srcObject = remoteStream;
 
-  remoteVideo.classList.add("remoteVideoInChatting");
+  alert('현재 participant: '+ participant);
+
+  remoteVideo[participant] = videos.item(participant);
+  remoteStream[participant] = event.stream;
+  remoteVideo[participant].srcObject = event.stream;
+
+  // shareScreen = videos.item(videos.length-1);
+  // shareScreen = document.querySelector('.shareScreen').srcObject;
+
   localVideo.classList.add("localVideoInChatting");
+  remoteVideo[participant].classList.add("remoteVideoInChatting");
+  // shareScreen.classList.add("shareVideoInChatting");
+  participant++;
 }
 
 function handleRemoteStreamRemoved(event) {
   console.log('Remote stream removed. Event: ', event);
 }
 
-function hangup() {
-  console.log('Hanging up.');
-  stop();
-  sendMessage('bye');
-}
 
 function handleRemoteHangup() {
-  remoteVideo.classList.remove("remoteVideoInChatting");
-  localVideo.classList.remove("localVideoInChatting");
 
+  for (var i = 0; i <= participant; i++) {
+    remoteVideo[i].classList.remove("remoteVideoInChatting");
+  }
+  localVideo.classList.remove("localVideoInChatting");
+  // shareScreen.classList.remove("shareVideoInChatting");
   console.log('Session terminated.');
   stop();
   isInitiator = false;
+
 }
 
 function stop() {
@@ -261,6 +243,7 @@ function stop() {
   pc.close();
   pc = null;
 }
+
 
 function muteMic(){
   localStream.getAudioTracks().forEach(track => track.enabled = !track.enabled);
