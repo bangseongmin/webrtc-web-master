@@ -3,7 +3,6 @@
 // Dont Touch ==========================================================================================================
 var os = require('os');
 var nodeStatic = require('node-static');
-// var http = require('http');
 
 var socketIO = require('socket.io');
 
@@ -79,7 +78,7 @@ io.sockets.on('connection', function(socket) {
       socket.emit('joined', room, socket.id);
       io.sockets.in(room).emit('ready');
       console.log('joined');
-    } else { // max two clients
+    } else {
       socket.emit('full', room);
     }
   });

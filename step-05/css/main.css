@@ -2,9 +2,6 @@ body {
   font-family: sans-serif;
 }
 
-video {
-
-}
 
 #videos {
   width: 100%;
@@ -43,3 +40,4 @@ video {
   height: 50%;
   background-color: darkblue;
 }
+

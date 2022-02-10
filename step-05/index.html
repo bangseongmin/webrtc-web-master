@@ -18,10 +18,10 @@
   <div id="videos">
     <video id="localVideo" autoplay muted playsinline></video>
     <video id="remoteVideo" autoplay playsinline></video>
+    <video id="shareScreen" autoplay playsinline></video>
   </div>
 
   <div>
-    <video id="shareScreen" autoplay playsinline></video>
   </div>
 
   <!-- This file is automatically added/served when running "node index.js". -->
@@ -39,7 +39,16 @@
       <ul>
         <li><a href="#" onclick="return muteMic();">음성</a></li>
         <li><a href="#" onclick="return muteCam();">비디오</a></li>
-        <li><a href="#" onclick="return shareScreen();">화면공유</a></li>
+        <div class="dropup">
+          <li><a href="#" onclick="return shareScreen();">화면공유</a></li>
+          <div class="dropup-content">
+            <a value="0">Screen Only (without audio)</a>
+            <a value="1">Screen + Microphone</a>
+            <a value="2">Screen + Speakers</a>
+            <a value="3">Screen + Microphone + Speakers</a>
+            <a value="4">Chrome Tab</a>
+          </div>
+        </div>
         <li><a href="#" onclick="return processRecording();">녹화</a> </li>
         <li><a href="#">STT</a></li>
         <li><a href="#">TTS</a></li>
@@ -47,22 +56,16 @@
         <li><a href="#">나가기</a></li>
       </ul>
     </div>
-    <div>
+
+
+    <div class="dropup">
       <!-- 녹화 선택지 -->
       <select id="RecordRTC_Extension_Options">
-        <option value="0">Screen Only (without audio)</option>
-        <option value="1">Screen + Microphone</option>
-        <option value="2">Screen + Speakers</option>
-        <option value="3">Screen + Microphone + Speakers</option>
-        <option value="4">Chrome Tab</option>
-        <option value="5">Chrome Tab (Audio Only)</option>
-        <option value="6">Full Screen + Camera</option>
-        <option value="7">Microphone + Camera</option>
-        <option value="8">Microphone + Speakers</option>
-        <option value="9">Microphone Only</option>
-        <option value="10">Speakers Only</option>
+
       </select>
     </div>
+
+
   </div>
 
   <footer style="margin-top: 20px;"><small id="send-message"></small></footer>
