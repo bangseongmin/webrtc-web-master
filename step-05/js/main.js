@@ -95,8 +95,8 @@ var localVideo = videos.item(0);
 var remoteVideo = [];
 remoteVideo[participant] = videos.item(participant);
 
-// var shareScreen = document.querySelector('.shareScreen');
-// shareScreen = videos.item(videos.length-1);
+var shareScreen = document.querySelector('.shareScreen');
+shareScreen = videos.item(videos.length-1);
 
 navigator.mediaDevices.getUserMedia({
   audio: true,
@@ -104,7 +104,7 @@ navigator.mediaDevices.getUserMedia({
 })
 .then(gotStream)
 .catch(function(e) {
-  alert('getUserMedia() error: ' + e.name);
+  console.log('getUserMedia() error: ' + e.name);
 });
 
 function gotStream(stream) {
@@ -132,7 +132,7 @@ function maybeStart() {
   }else if(isStarted && typeof localStream !== 'undefined' && isChannelReady){
     console.log('>>>>>> creating peer connection');
     createPeerConnection();
-    pc.addStream(localStream, shareScreen);
+    pc.addStream(localStream);
     isStarted = true;
     console.log('isInitiator', isInitiator);
     if (isInitiator) {
@@ -156,7 +156,7 @@ function createPeerConnection() {
     console.log('Created RTCPeerConnnection');
   } catch (e) {
     console.log('Failed to create PeerConnection, exception: ' + e.message);
-    alert('Cannot create RTCPeerConnection object.');
+    console.log('Cannot create RTCPeerConnection object.');
     return;
   }
 }
@@ -205,8 +205,7 @@ function onCreateSessionDescriptionError(error) {
 function handleRemoteStreamAdded(event) {
   console.log('Remote stream added.');
 
-  alert('현재 participant: '+ participant);
-
+  alert("현재 인원:"+participant);
   remoteVideo[participant] = videos.item(participant);
   remoteStream[participant] = event.stream;
   remoteVideo[participant].srcObject = event.stream;
@@ -218,6 +217,7 @@ function handleRemoteStreamAdded(event) {
   remoteVideo[participant].classList.add("remoteVideoInChatting");
   // shareScreen.classList.add("shareVideoInChatting");
   participant++;
+  document.getElementById('attendCount').setAttribute('value', participant);
 }
 
 function handleRemoteStreamRemoved(event) {

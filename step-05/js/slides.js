@@ -17,8 +17,15 @@ function moveSlide(num){
 }
 
 nextBtn.addEventListener('click', function(){
-    if(currentIdx+2 < attendCount && attendCount <= slideCount){
-        moveSlide(currentIdx+1);
+    attendCount = document.getElementById("attendCount");
+    if(currentIdx<= slideCount){
+        if(attendCount.value/ currentIdx != 1 ){
+            alert("attendCount"+attendCount.value);
+            moveSlide(currentIdx+1);
+            alert("이동 성공");
+        }else {
+            alert("인원 미달");
+        }
     }else{
         moveSlide(0);
     }
@@ -29,7 +36,7 @@ prevBtn.addEventListener('click', function(){
     if(currentIdx > 0){
         moveSlide(currentIdx-1);
     }else{
-        if(currentIdx-2 >0)
+        if(currentIdx-1 >0)
             moveSlide(slideCount-2);
     }
 })
