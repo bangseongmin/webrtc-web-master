@@ -19,8 +19,9 @@ function moveSlide(num){
 nextBtn.addEventListener('click', function(){
     attendCount = document.getElementById("attendCount");
     if(currentIdx<= slideCount){
-        if(attendCount.value/ currentIdx != 1 ){
+        if(currentIdx+3 < attendCount.value){
             alert("attendCount"+attendCount.value);
+            alert("currentIdx"+currentIdx);
             moveSlide(currentIdx+1);
             alert("이동 성공");
         }else {

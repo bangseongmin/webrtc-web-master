@@ -7,9 +7,7 @@ var localStream;
 var pc;
 var remoteStream = [];
 var turnReady;
-
-var participant = 1;
-
+var participant = 0;
 var pcConfig = {
   'iceServers': [{
     'urls': 'stun:stun.l.google.com:19302'
@@ -19,6 +17,7 @@ var pcConfig = {
     'credential': '123456'  
   }]
 };
+
 
 /////////////////////////////////////////////
 
@@ -31,6 +30,8 @@ var socket = io.connect();
 if (room !== '') {
   socket.emit('create or join', room);
   console.log('Attempted to create or  join room', room);
+  alert("roomID"+getParam(""));
+  alert("userID"+getParam(""));
 }
 
 socket.on('created', function(room) {
@@ -74,6 +75,7 @@ socket.on('message', function(message) {
       maybeStart();
     }
     pc.setRemoteDescription(new RTCSessionDescription(message));
+
     doAnswer();
   } else if (message.type === 'answer' && isStarted) {
     pc.setRemoteDescription(new RTCSessionDescription(message));
@@ -96,7 +98,6 @@ var remoteVideo = [];
 remoteVideo[participant] = videos.item(participant);
 
 var shareScreen = document.querySelector('.shareScreen');
-shareScreen = videos.item(videos.length-1);
 
 navigator.mediaDevices.getUserMedia({
   audio: true,
@@ -111,6 +112,7 @@ function gotStream(stream) {
   console.log('Adding local stream.');
   localStream = stream;
   localVideo.srcObject = stream;
+  shareScreen.srcObject = stream;
 
   sendMessage('got user media');
   if (isInitiator) {
@@ -124,6 +126,7 @@ function maybeStart() {
     console.log('>>>>>> creating peer connection');
     createPeerConnection();
     pc.addStream(localStream);
+
     isStarted = true;
     console.log('isInitiator', isInitiator);
     if (isInitiator) {
@@ -153,6 +156,7 @@ function createPeerConnection() {
     pc.onicecandidate = handleIceCandidate;
     pc.onaddstream = handleRemoteStreamAdded;
     pc.onremovestream = handleRemoteStreamRemoved;
+
     console.log('Created RTCPeerConnnection');
   } catch (e) {
     console.log('Failed to create PeerConnection, exception: ' + e.message);
@@ -206,13 +210,13 @@ function handleRemoteStreamAdded(event) {
   console.log('Remote stream added.');
 
   alert("현재 인원:"+participant);
-  remoteVideo[participant] = videos.item(participant);
+  remoteVideo[participant] = videos.item(participant+1);
   remoteStream[participant] = event.stream;
   remoteVideo[participant].srcObject = event.stream;
 
-  // shareScreen = videos.item(videos.length-1);
-  // shareScreen = document.querySelector('.shareScreen').srcObject;
+  shareScreen.srcObject = event.stream;
 
+  shareScreen.classList.add("shareVideoInChatting");
   localVideo.classList.add("localVideoInChatting");
   remoteVideo[participant].classList.add("remoteVideoInChatting");
   // shareScreen.classList.add("shareVideoInChatting");
@@ -231,7 +235,7 @@ function handleRemoteHangup() {
     remoteVideo[i].classList.remove("remoteVideoInChatting");
   }
   localVideo.classList.remove("localVideoInChatting");
-  // shareScreen.classList.remove("shareVideoInChatting");
+  shareScreen.classList.remove("shareVideoInChatting");
   console.log('Session terminated.');
   stop();
   isInitiator = false;
@@ -242,6 +246,7 @@ function stop() {
   isStarted = false;
   pc.close();
   pc = null;
+
 }
 
 
@@ -253,4 +258,22 @@ function muteMic(){
 function muteCam(){
   localStream.getVideoTracks().forEach(track => track.enabled = !track.enabled);
   return false;
+}
+
+
+// url 에서 parameter 추출
+
+function getParam(sname) {
+
+  var params = location.search.substr(location.search.indexOf("?") + 1);
+  var sval = "";
+  var params = params.split("&");
+
+  for (var i = 0; i < params.length; i++) {
+    var temp = params[i].split("=");
+
+    if ([temp[0]] == sname) { sval = temp[1]; }
+  }
+
+  return sval;
 }
